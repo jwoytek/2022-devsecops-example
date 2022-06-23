@@ -26,7 +26,7 @@ the project's performance in the pipeline.
 * sonarcloud.io account (https://sonarcloud.io, sign in with your Github account, choose the free plan, don't add any projects yet)
 
 ### General Procedure
-#### Setup
+#### I. Setup
 1. Fork the repo https://github.com/jwoytek/2022-devsecops-example to your own Github account
 2. Go into your Github user settings
 3. Scroll down to select "Applications". You should see TravisCI and SonarCloud here.
@@ -34,23 +34,28 @@ the project's performance in the pipeline.
 5. Under Repository Access, choose "Only select repositories", and select your fork of the 2022-devsecops-example repository from the drop-down.
 6. Read and click through any approval prompts. 
 7. Click Save.
-8. Click again on "Applications" on the left bar.
-9. Click "Configure" for SonarCloud.
-10. Under Repository Access, choose "Only select repositories", and select your fork of the 2022-devsecops-example repository from the drop-down.
-11. Read and click through any approval prompts. 
-12. Click Save.
-13. Clone your forked repository to your development machine.
-14. cd into the 2022-devsecops-example directory.
-15. Create a virtual environment for testing: `virtualenv -p python3 venv`
-16. Activate the virtual environment: `. venv/bin/activate`
-17. Install the Python requirements: `pip3 install -r requirements.txt`
+8. You will be redirected to the TravisCI page to finish configuration.
+   After a few moments, you should see the page refresh and your
+   repository will be listed. 
+9. Go back to Github Settings, and click again on "Applications" on the left bar.
+10. Click "Configure" for SonarCloud.
+11. Under Repository Access, choose "Only select repositories", and select your fork of the 2022-devsecops-example repository from the drop-down.
+12. Read and click through any approval prompts. 
+13. Click Save.
+14. You will be redirected to the SonarCloud site to finish
+    configuration. It is OK to click back to Github at this point.
+14. Clone your forked repository to your development machine.
+15. cd into the 2022-devsecops-example directory.
+16. Create a virtual environment for testing: `virtualenv -p python3 venv`
+17. Activate the virtual environment: `. venv/bin/activate`
+18. Install the Python requirements: `pip3 install -r requirements.txt`
 
-#### Local Testing
+#### II. Local Testing
 Run local tests: `py.test --cov --cov-report=xml owm tests -vv`
 
 All tests should complete successfully.
 
-#### Client Testing
+#### III. Client Testing
 This is not required, but if you would like to see the client in action,
 you will need to sign up under the free plan for the OpenWeatherMap API.
 Once you have signed up, get your API key, and paste it into a file in the
@@ -58,32 +63,34 @@ repository root named `.apikey`. Once this is done, you should be able
 to run `test.py` to see the weather in Pittsburgh and at a nearby 
 location.
 
-#### Configure the Pipeline
+#### IV. Configure the Pipeline
 1. Go to your SonarCloud.io account.
 2. Use the "+" menu at the top right to add a new project.
 3. You should see your repo listed here. Select it to import the project.
-4. Once the initial import and analysis is complete, click on the project to view it.
-5. Under the Administration menu, choose "Analysis Method".
-6. Turn OFF "SonarCloud Automatic Analysis". This needs to be OFF so that TravisCI can trigger the analysis as part of the pipeline.
-7. Under Administration menu, go to "Update Key".
-8. Copy the update key listed. We will use this in a future step.
-9. Click your profile photo in the top right, then go to the Security tab.
-10. Create a token. The name does not matter. Copy the token. We will use this in a future step. 
-11. Go to the Organizations tab. 
-12. Copy the "Key" for your organization. We will use this in a future step.
-13. Go to your TravisCI account.
-14. Select your 2022-devsecops-example repository.
-15. From the menu at the right, choose "Settngs".
-16. Under Environment Variables, enter a new variable named "SONAR_TOKEN", and paste in the security token you created in step 10.
+4. When asked to choose your analysis method, pick "With Travis CI".
+5. Copy the "SONAR_TOKEN" key listed. We will use this in a future step.
+6. Click Next.
+7. Under "Edit your .travis.yml file," choose Other.
+8. Click "Continue." We will edit the .travis.yml file later. 
+9. Copy the `sonar.projectKey` and `sonar.organization` lines. We will
+   use these in a future step.
+10. Click your profile photo in the top right, then go to the Security tab.
+11. Create a token. The name does not matter. Copy the token. We will use this in a future step. 
+12. Go to your TravisCI account.
+13. Select your 2022-devsecops-example repository.
+14. From the menu at the right, choose "Settngs".
+15. Under Environment Variables, enter a new variable named "SONAR_TOKEN", and paste in the security token you copied in step 5.
+16. Click "Add" to add the variable.
 17. In the repository directory, edit the `.travis.yml` file. This is the TravisCI configuration file. 
-18. Locate the "organization" value under "sonarcloud". It is set to "jwoytek" by default. Change this to the organization key copied in step 12.
+18. Locate the "organization" value under "sonarcloud". It is set to "jwoytek" by default. Change this to the value of `sonar.organization` copied in step 9.
 19. Save the `.travis.yml` file. 
 20. Edit the `sonar-project.properties` file. This is the SonarCloud configuration file.
-21. Change the value of the `sonar.projectKey` to the "update key" copied in step 8.
+21. Change the value of the `sonar.projectKey` and `sonar.organization` to those copied in steap 9.
 22. Save the `sonar-project.properties` file. 
 23. Go to your coveralls.io account.
 24. Click the "+" to add a repo. 
-25. Locate your repo in the list and click the switch to "on". 
+25. Locate your repo in the list and click the switch to "on". You may
+    have to click "Sync Repos" if your repo does not appear.
 
 
 #### Trigger a TravisCI Build
@@ -118,9 +125,8 @@ You should notice that the code is not 100% covered by tests. Use the
 reporting in coveralls.io to locate the code that is not covered by 
 tests, and create tests such that coverage reaches 100%. 
 
-SonarCloud.io will show two "code sniffs", pointing out some things that
-could be improved in the code. Attempt to fix one or both of these 
-inefficiencies. 
+SonarCloud.io will show some "code sniffs", pointing out some things that
+could be improved in the code. Attempt to fix these inefficiencies. 
 
 Create a branch and made some modifications to the branch, then create
 a pull request. Observe the automatic testing and reporting that Github
