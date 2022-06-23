@@ -11,5 +11,3 @@ after_success:
 addons:
   sonarcloud:
     organization: jwoytek
-script:
-  - sonar-scanner
