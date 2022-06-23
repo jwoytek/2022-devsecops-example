@@ -11,7 +11,7 @@ setup(name='owmapi',
           'Programming Language :: Python :: 3.9'
       ],
       keywords=('OpenWeatherMap'),
-      url='https://github.com/jwoytek/2021-lge-devsecops',
+      url='https://github.com/jwoytek/2022-devsecops-example',
       author='Jonathan Woytek',
       author_email='woytek@dryrose.com',
       packages=find_packages(exclude=['tests']),
